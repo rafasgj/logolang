@@ -1,0 +1,24 @@
+chances = 0
+secret = RANDOM + 1
+guess = -1
+
+PRINT "Guess a number between 1 and 10\n"
+while :guess <> :secret and :chances < 3
+    chances += 1
+    PRINT "Try #" :chances ". What is you guess? "
+    TYPEIN guess
+    if :guess > :secret then
+       PRINT "The number is smaller.\n"
+    end
+    if :guess < :secret then
+       PRINT "The number is higher.\n"
+    end
+end
+
+if :guess == :secret then
+   PRINT "You win\n"
+else
+   PRINT "Sorry... try again.\n"
+end
+
+PRINT "The number was " :secret "\n"

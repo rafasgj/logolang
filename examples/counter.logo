@@ -1,0 +1,5 @@
+counter = 5
+wHILE :counter > 0
+  PRINT :counter "\n"
+  counter -= 1
+END

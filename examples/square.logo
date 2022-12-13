@@ -1,0 +1,14 @@
+SQUARE 10
+RT 45
+FO 14
+
+TO SQUARE :length 
+    FO :length
+    RT 90
+    FO :length
+    RT 90
+    FO :length
+    RT 90
+    FO :length
+    RT 90
+END

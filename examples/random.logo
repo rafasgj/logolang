@@ -1,0 +1,1 @@
+PRINT "A number between 1 and 10: " RANDOM + 1 "\n"

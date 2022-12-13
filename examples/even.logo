@@ -1,0 +1,7 @@
+PRINT "Type a number: "
+TYPEIN num
+IF :num % 2 == 0 THEN
+    PRINT "The number is EVEN.\n"
+ELSE
+    PRINT "The number is ODD.\n"
+END

@@ -1,0 +1,5 @@
+TO greeting :whom
+    PRINT "Hello, " :whom "\n"
+END
+
+greeting "John"

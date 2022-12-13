@@ -1,0 +1,23 @@
+TO dashed :length
+    step = 5
+    run = 0
+    PD
+    while :length > 0
+        length -= :step
+        if :length < 0 then step += :length end
+        if (:run % 2) == 0 then PENDOWN else PENUP end
+        run += 1
+        FORWARD :step
+    END
+END
+
+TO dashed_square :length
+    dashed :length RIGHT 90
+    dashed :length RT 90
+    dashed :length RT 90
+    dashed :length RT 90
+END
+
+SETXY 50 50
+dashed_square 300
+

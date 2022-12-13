@@ -1,0 +1,17 @@
+count = 0
+while :count < 10
+    SQUARE 80
+    RT 36
+    count += 1
+END
+
+TO SQUARE :length 
+    FORWARD :length
+    RIGHT 90
+    FORWARD :length
+    RIGHT 90
+    FORWARD :length
+    RIGHT 90
+    FORWARD :length
+    RIGHT 90
+END

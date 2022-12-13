@@ -1,0 +1,5 @@
+pi = 3.141592
+PRINT "Ray: "
+TYPEIN ray
+PRINT "Circunference: " 2*:pi*:ray "\n"
+PRINT "Area: " :pi*:ray^2 "\n"
