@@ -1,0 +1,21 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  @greeting.whom 0
+  
+.CODE
+  
+DEF __main__:
+  PUSH "John"
+  CALL greeting
+  HALT
+  
+DEF greeting:
+  STOR @greeting.whom
+  PUSH "Hello, "
+  LOAD @greeting.whom
+  PUSH "\n"
+  PUSH 3
+  CALL WRITE
+  RET

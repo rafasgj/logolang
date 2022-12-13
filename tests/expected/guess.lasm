@@ -1,0 +1,94 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  chances  0
+  secret   0
+  guess    -1
+  
+.CODE
+  
+DEF __main__:
+  CALL RANDOM
+  PUSH 1
+  ADD
+  STOR secret
+  PUSH "Guess a number between 1 and 10\n"
+  PUSH 1
+  CALL WRITE
+:_@trgt_5
+  LOAD guess
+  LOAD secret
+  SUB
+  POP
+  JZ :_@trgt_6
+  LOAD chances
+  PUSH 3
+  SUB
+  POP
+  JMORE :_@trgt_6
+  JZ :_@trgt_6
+  LOAD chances
+  PUSH 1
+  ADD
+  STOR chances
+  PUSH "Try #"
+  LOAD chances
+  PUSH ". What is you guess? "
+  PUSH 3
+  CALL WRITE
+  CALL READ
+  STOR guess
+  LOAD guess
+  LOAD secret
+  SUB
+  POP
+  JLESS :_@trgt_1
+  JZ :_@trgt_1
+  PUSH "The number is smaller.\n"
+  PUSH 1
+  CALL WRITE
+  JP :_@trgt_2
+:_@trgt_1
+:_@trgt_2
+  LOAD guess
+  LOAD secret
+  SUB
+  POP
+  JMORE :_@trgt_3
+  JZ :_@trgt_3
+  PUSH "The number is higher.\n"
+  PUSH 1
+  CALL WRITE
+  JP :_@trgt_4
+:_@trgt_3
+:_@trgt_4
+  JP :_@trgt_5
+:_@trgt_6
+  LOAD guess
+  LOAD secret
+  SUB
+  POP
+  JNZ :_@trgt_7
+  PUSH "You win\n"
+  PUSH 1
+  CALL WRITE
+  JP :_@trgt_8
+:_@trgt_7
+  PUSH "Sorry... try again.\n"
+  PUSH 1
+  CALL WRITE
+:_@trgt_8
+  PUSH "The number was "
+  LOAD secret
+  PUSH "\n"
+  PUSH 3
+  CALL WRITE
+  HALT
+  
+DEF RANDOM:
+  RAND
+  PUSH 10
+  MUL
+  TRUNC
+  RET

@@ -1,0 +1,32 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  num      0
+  
+.CODE
+  
+DEF __main__:
+  PUSH "Type a number: "
+  PUSH 1
+  CALL WRITE
+  CALL READ
+  STOR num
+  LOAD num
+  PUSH 2
+  IDIV
+  POP
+  PUSH 0
+  SUB
+  POP
+  JNZ :_@trgt_1
+  PUSH "The number is EVEN.\n"
+  PUSH 1
+  CALL WRITE
+  JP :_@trgt_2
+:_@trgt_1
+  PUSH "The number is ODD.\n"
+  PUSH 1
+  CALL WRITE
+:_@trgt_2
+  HALT

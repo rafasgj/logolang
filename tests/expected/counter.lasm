@@ -1,0 +1,27 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  counter  5
+  
+.CODE
+  
+DEF __main__:
+:_@trgt_1
+  LOAD counter
+  PUSH 0
+  SUB
+  POP
+  JLESS :_@trgt_2
+  JZ :_@trgt_2
+  LOAD counter
+  PUSH "\n"
+  PUSH 2
+  CALL WRITE
+  LOAD counter
+  PUSH 1
+  SUB
+  STOR counter
+  JP :_@trgt_1
+:_@trgt_2
+  HALT

@@ -1,0 +1,68 @@
+#--------------------------
+.START __main__
+  
+.INIT 200 200 400 400
+  
+.DATA
+  @FORWARD.length 0
+  @RIGHT.angle 0
+  @SQUARE.length 0
+  _@ang    0
+  count    0
+  
+.CODE
+  
+DEF __main__:
+:_@trgt_1
+  LOAD count
+  PUSH 10
+  SUB
+  POP
+  JMORE :_@trgt_2
+  JZ :_@trgt_2
+  PUSH 80
+  CALL SQUARE
+  PUSH 36
+  CALL RIGHT
+  LOAD count
+  PUSH 1
+  ADD
+  STOR count
+  JP :_@trgt_1
+:_@trgt_2
+  HALT
+  
+DEF FORWARD:
+  STOR @FORWARD.length
+  LOAD _@ang
+  LOAD @FORWARD.length
+  CALL MOVE
+  RET
+  
+DEF RIGHT:
+  STOR @RIGHT.angle
+  LOAD _@ang
+  LOAD @RIGHT.angle
+  SUB
+  STOR _@ang
+  RET
+  
+DEF SQUARE:
+  STOR @SQUARE.length
+  LOAD @SQUARE.length
+  CALL FORWARD
+  PUSH 90
+  CALL RIGHT
+  LOAD @SQUARE.length
+  CALL FORWARD
+  PUSH 90
+  CALL RIGHT
+  LOAD @SQUARE.length
+  CALL FORWARD
+  PUSH 90
+  CALL RIGHT
+  LOAD @SQUARE.length
+  CALL FORWARD
+  PUSH 90
+  CALL RIGHT
+  RET

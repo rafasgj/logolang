@@ -1,0 +1,21 @@
+#--------------------------
+.START __main__
+  
+.CODE
+  
+DEF __main__:
+  PUSH "A number between 1 and 10: "
+  CALL RANDOM
+  PUSH 1
+  ADD
+  PUSH "\n"
+  PUSH 3
+  CALL WRITE
+  HALT
+  
+DEF RANDOM:
+  RAND
+  PUSH 10
+  MUL
+  TRUNC
+  RET

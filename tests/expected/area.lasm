@@ -1,0 +1,34 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  pi       3.141592
+  ray      0
+  
+.CODE
+  
+DEF __main__:
+  PUSH "Ray: "
+  PUSH 1
+  CALL WRITE
+  CALL READ
+  STOR ray
+  PUSH "Circunference: "
+  PUSH 2
+  LOAD pi
+  MUL
+  LOAD ray
+  MUL
+  PUSH "\n"
+  PUSH 3
+  CALL WRITE
+  PUSH "Area: "
+  LOAD pi
+  LOAD ray
+  PUSH 2
+  POW
+  MUL
+  PUSH "\n"
+  PUSH 3
+  CALL WRITE
+  HALT

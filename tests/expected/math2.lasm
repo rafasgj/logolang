@@ -1,0 +1,18 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  a        2
+  b        3
+  
+.CODE
+  
+DEF __main__:
+  PUSH -1
+  LOAD a
+  LOAD b
+  ADD
+  MUL
+  PUSH 1
+  CALL WRITE
+  HALT

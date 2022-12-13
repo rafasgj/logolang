@@ -1,0 +1,13 @@
+#--------------------------
+.START __main__
+  
+.DATA
+  hello    "Hello World\n"
+  
+.CODE
+  
+DEF __main__:
+  LOAD hello
+  PUSH 1
+  CALL WRITE
+  HALT

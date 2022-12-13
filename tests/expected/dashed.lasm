@@ -1,0 +1,126 @@
+#--------------------------
+.START __main__
+  
+.INIT 200 200 400 400
+  
+.DATA
+  @FORWARD.length 0
+  @RIGHT.angle 0
+  @SETXY.x 0
+  @SETXY.y 0
+  @dashed.step 5
+  @dashed.run 0
+  @dashed.length 0
+  @dashed_square.length 0
+  _@ang    0
+  
+.CODE
+  
+DEF __main__:
+  PUSH 50
+  PUSH 50
+  CALL SETXY
+  PUSH 300
+  CALL dashed_square
+  HALT
+  
+DEF FORWARD:
+  STOR @FORWARD.length
+  LOAD _@ang
+  LOAD @FORWARD.length
+  CALL MOVE
+  RET
+  
+DEF RIGHT:
+  STOR @RIGHT.angle
+  LOAD _@ang
+  LOAD @RIGHT.angle
+  SUB
+  STOR _@ang
+  RET
+  
+DEF PENUP:
+  UNSET 0
+  RET
+  
+DEF PENDOWN:
+  SET 0
+  RET
+  
+DEF SETXY:
+  STOR @SETXY.x
+  STOR @SETXY.y
+  LOAD @SETXY.x
+  LOAD @SETXY.y
+  MVTO
+  RET
+  
+DEF dashed:
+  STOR @dashed.length
+  CALL PENDOWN
+:_@trgt_5
+  LOAD @dashed.length
+  PUSH 0
+  SUB
+  POP
+  JLESS :_@trgt_6
+  JZ :_@trgt_6
+  LOAD @dashed.length
+  LOAD @dashed.step
+  SUB
+  STOR @dashed.length
+  LOAD @dashed.length
+  PUSH 0
+  SUB
+  POP
+  JMORE :_@trgt_1
+  JZ :_@trgt_1
+  LOAD @dashed.step
+  LOAD @dashed.length
+  ADD
+  STOR @dashed.step
+  JP :_@trgt_2
+:_@trgt_1
+:_@trgt_2
+  LOAD @dashed.run
+  PUSH 2
+  IDIV
+  POP
+  PUSH 0
+  SUB
+  POP
+  JNZ :_@trgt_3
+  CALL PENDOWN
+  JP :_@trgt_4
+:_@trgt_3
+  CALL PENUP
+:_@trgt_4
+  LOAD @dashed.run
+  PUSH 1
+  ADD
+  STOR @dashed.run
+  LOAD @dashed.step
+  CALL FORWARD
+  JP :_@trgt_5
+:_@trgt_6
+  RET
+  
+DEF dashed_square:
+  STOR @dashed_square.length
+  LOAD @dashed_square.length
+  CALL dashed
+  PUSH 90
+  CALL RIGHT
+  LOAD @dashed_square.length
+  CALL dashed
+  PUSH 90
+  CALL RIGHT
+  LOAD @dashed_square.length
+  CALL dashed
+  PUSH 90
+  CALL RIGHT
+  LOAD @dashed_square.length
+  CALL dashed
+  PUSH 90
+  CALL RIGHT
+  RET
