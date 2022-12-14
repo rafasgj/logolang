@@ -24,7 +24,6 @@ from ply.lex import TOKEN
 
 from logolang.errors import InvalidCharacter, InvalidIdentifier
 
-
 # Characters to be ignored by lexer.
 t_ignore = " \t\r"  # pylint: disable=invalid-name
 
@@ -59,8 +58,8 @@ tokens = tuple(RESERVED + NON_RESERVED + tuple(set(OPERATORS.values())))
 
 globals().update({f"t_{v}": k for k, v in OPERATORS.items()})
 
-t_ASSIGN_OP = "[-+*/]?="
-t_REL_OP = "==|<>|>=|<=|>|<"
+t_ASSIGN_OP = "[-+*/]?="  # pylint: disable=invalid-name
+t_REL_OP = "==|<>|>=|<=|>|<"  # pylint: disable=invalid-name
 
 
 @TOKEN(r"[_a-zA-Z][_a-zA-Z0-9]*")

@@ -88,7 +88,7 @@ def code_gen():
                 target_code.extend(func_code.gen_code())
             func["generated"] = True
             if alias:
-                alias["generated"] = True
+                alias["generated"] = True  # pylint: disable=E1137
         elif not func.get("library"):
             logging.warning(
                 "Function %s defined but not used:%d",

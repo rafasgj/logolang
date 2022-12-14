@@ -21,7 +21,10 @@ import logging
 
 from ply import yacc
 
-from logolang.lexer import lexer, tokens  # noqa: F401
+from logolang.lexer import (  # pylint: disable=unused-import # noqa: F401
+    lexer,
+    tokens,
+)
 
 from logolang import codegen
 from logolang.symtable import (
@@ -34,8 +37,8 @@ from logolang.symtable import (
 
 from logolang.errors import InvalidExpressionType, InternalError
 
-__parser_error = True
-__parser = None
+parser_error = True  # pylint: disable=invalid-name
+__parser = None  # pylint: disable=invalid-name
 
 precedence = (
     ("nonassoc", "LOGIC_OP"),
@@ -53,17 +56,17 @@ def p_program(p):  # noqa: D200,D403,D400,D415
     sym = get_symbol("__main__", "")
     sym["code"] = codegen.FunctionDefinition(sym, sym["code"])
     pop_scope()
-    p[0] = __parser_error
+    p[0] = parser_error
 
 
-def p_more_statements_or_decls(p):  # noqa: D200,D205,D403,D400,D415
+def p_more_statements_or_decls(_p):  # noqa: D200,D205,D403,D400,D415
     """
     more_statements_or_decls : statement_or_decl more_statements_or_decls
                              | empty
     """
 
 
-def p_statement_or_decl_primitive_decl(p):  # noqa: D200,D403,D400,D415
+def p_statement_or_decl_primitive_decl(_p):  # noqa: D200,D403,D400,D415
     """
     statement_or_decl : primitive_decl
     """
@@ -328,7 +331,7 @@ def p_boolean_relop(p):  # noqa: D200,D403,D400,D415
     for i in [1, 3]:
         if p[i].type == bool:
             raise InvalidExpressionType(p.lineno(i), bool)
-    if p[1].type == str or p[3].type == str:
+    if str in (p[1].type, p[3].type):
         if p[1].type != p[3].type:
             raise InvalidExpressionType(
                 p.lineno(2), "Cannot compare STRING to other data type"
@@ -372,8 +375,7 @@ def p_error(p):
 
 def parse_program(source):
     """Parse LogoASM program."""
-    global tokens  # pylint: disable=global-variable-undefined, invalid-name
-    global __parser
+    # global __parser  # pylint: disable=global-variable-undefined,invalid-name
     # Parse program
     __parser = yacc.yacc(start="program", debug=True)
     return __parser.parse(source, lexer=lexer(), tracking=False)

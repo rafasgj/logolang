@@ -56,9 +56,7 @@ def pop_scope():
 def current_scope():
     """Retrieve the full name of the current scope."""
     return ".".join(
-        "@%s" % scope["name"]
-        for scope in __symtable["scopes"]
-        if scope["name"]
+        f"@{scope['name']}" for scope in __symtable["scopes"] if scope["name"]
     )
 
 

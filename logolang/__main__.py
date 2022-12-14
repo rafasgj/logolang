@@ -68,6 +68,7 @@ def main():
     initialize_standard_library()
     # parse source code
     try:
+        # pylint: disable=unspecified-encoding
         with (open(filename, "rt") if filename else sys.stdin) as input_file:
             if parse_program(input_file.read()):
                 code_gen()
@@ -80,7 +81,6 @@ def main():
         logolang.errors.InternalError,
     ) as error:
         print(str(error), file=sys.stderr)
-        raise error
         return 1
 
 

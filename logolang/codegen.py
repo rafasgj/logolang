@@ -107,13 +107,10 @@ class BinaryOperator(namedtuple("BinaryOperator", "op lhs rhs")):
 
     def __new__(cls, op, lhs, rhs):
         """Initialize namedtuple."""
-        if lhs.type == str or rhs.type == str:
+        if str in (lhs.type, rhs.type):
             raise InternalError("Operations for 'str' not available.")
-        if lhs.type != rhs.type:
-            if lhs.type == bool or rhs.type == bool:
-                raise InternalError(
-                    "Invalid operation with 'bool' and 'number'."
-                )
+        if lhs.type != rhs.type and bool in (lhs.type, rhs.type):
+            raise InternalError("Invalid operation with 'bool' and 'number'.")
         return super().__new__(cls, op, lhs, rhs)
 
     @property
@@ -121,7 +118,7 @@ class BinaryOperator(namedtuple("BinaryOperator", "op lhs rhs")):
         """Return datatype."""
         if self.lhs.type == self.rhs.type:
             return self.lhs.type
-        if self.lhs.type == float or self.rhs.type == float:
+        if float in (self.lhs.type, self.rhs.type):
             return float
         return int
 
@@ -133,6 +130,8 @@ class BinaryOperator(namedtuple("BinaryOperator", "op lhs rhs")):
     @property
     def value(self):
         """Return the expression value."""
+        if not self.is_const:
+            raise InternalError("Acessing 'value' of non-const expression.")
         operation = {}
         if self.is_const:
             operation = {
@@ -317,11 +316,10 @@ class RelationalOperator:
             raise InternalError(
                 "Relational operators for 'str' are not available."
             )
-        if lhs.type != rhs.type:
-            if lhs.type == bool or rhs.type == bool:
-                raise InternalError(
-                    "Invalid relation operation with 'bool' and 'number'."
-                )
+        if lhs.type != rhs.type and bool in (lhs.type, rhs.type):
+            raise InternalError(
+                "Invalid relation operation with 'bool' and 'number'."
+            )
         self.oper = oper
         self.lhs = lhs
         self.rhs = rhs
@@ -437,6 +435,18 @@ class BooleanOperator:
         self.true = None
         self.false = None
 
+    def value(self):
+        """Retrieve the value of a constant boolean operator."""
+        if not self.is_const:
+            raise InternalError("Acessing 'value' of non-const expression.")
+        if self.rhs is None:
+            return not self.lhs.value
+        return (
+            (self.lhs and self.rhs)
+            if self.oper == "AND"
+            else (self.lhs or self.rhs)
+        )
+
     def __not(self):
         """NOT operator implementation."""
         self.lhs.true = self.false
@@ -463,7 +473,7 @@ class BooleanOperator:
             value = BooleanValue(self.value)
             value.true = self.true
             value.false = self.false
-            return value.code_gen()
+            return value.gen_code()
         return {"NOT": self.__not, "AND": self.__and, "OR": self.__or}.get(
             self.oper, lambda: []
         )()
