@@ -53,7 +53,7 @@ def parse_command_line():
     options = cli_parser()
     log_format = "%(levelname)s (%(funcName)s) %(message)s"
     level = 30 - (10 * (3 if options.debug > 3 else options.debug))
-    logging.basicConfig(force=True, format=log_format, level=level)
+    logging.basicConfig(format=log_format, level=level)
     logging.addLevelName(3, "LEXER")
     logging.addLevelName(5, "PARSER")
     return options.filename
