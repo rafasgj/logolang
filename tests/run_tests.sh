@@ -14,11 +14,11 @@ for src in $(ls -1 "${sources}"/*.logo)
 do
     filename=$(basename $src '.logo') 
     echo -en "Compiling \033[37;1m${filename}\033[0m... "
-    if PYTHONPATH="${dir}/.." python ${dir}/../logolang/__main__.py ${src} > /tmp/a.out 2>/dev/null
+    if PYTHONPATH="${dir}/.." python ${dir}/../logolang/__main__.py ${src} > /tmp/a.out
     then
         echo -e "\033[32;1mDONE\033[0m"
         echo -n "Evaluating output... "
-        if diff -Naur "${expected}/${filename}.lasm" /tmp/a.out 2>/dev/null >/dev/null
+        if diff -Naur "${expected}/${filename}.lasm" /tmp/a.out
         then
             echo -e "\033[32;1mDONE\033[0m"
         else
