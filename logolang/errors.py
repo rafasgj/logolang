@@ -50,6 +50,7 @@ class InternalError(Exception):
     """An invalid type was used in an expression."""
 
     def __init__(self, msg):
+        """Initialize an Internal Error."""
         super().__init__(f"InternalError:{msg}")
 
 
@@ -57,6 +58,7 @@ class LogoParserError(Exception):
     """Base class for Parser errors."""
 
     def __init__(self, lineno, msg):
+        """Initialize a Logo Parser Error."""
         super().__init__(f"{self.__class__.__name__}:{lineno}:{msg}")
 
 
@@ -64,11 +66,15 @@ class InvalidExpressionType(LogoParserError):
     """An invalid type was used in an expression."""
 
     def __init__(self, lineno, datatype, msg="Invalid data type"):
+        """Initialize an Invalid Expression Type exception."""
         super().__init__(lineno, f"{msg}:{repr(datatype)}")
 
 
 class SymbolRedeclaration(LogoParserError):
+    """A symbol was redeclared with a different semantic."""
+
     def __init__(self, lineno, symbol, original):
+        """Initialize a Symbol Redeclaration exception."""
         super().__init__(
             lineno, f"Redefining symbol {symbol} defined at {original}"
         )

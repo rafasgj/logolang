@@ -25,7 +25,7 @@ __symtable = {"scopes": [], "FUNCTION": {}, "VAR": {}}
 
 
 def get_symbols_by_class(cls):
-    """Returns all the symbols of a specific class."""
+    """Return all the symbols of a specific class."""
     return __symtable[cls]
 
 
@@ -54,6 +54,7 @@ def pop_scope():
 
 
 def current_scope():
+    """Retrieve the full name of the current scope."""
     return ".".join(
         "@%s" % scope["name"]
         for scope in __symtable["scopes"]
@@ -62,6 +63,7 @@ def current_scope():
 
 
 def get_symbol(symbol, scopename=None, symtype=None):
+    """Get a symbol from the symbol table."""
     symbol = symbol.upper()
     for scope in __symtable["scopes"][::-1]:
         if scopename is None or scopename == scope["name"]:
@@ -75,6 +77,7 @@ def get_symbol(symbol, scopename=None, symtype=None):
 
 
 def add_symbol(symbol, symtype, lineno=-1, **kwargs):
+    """Add a symbol to the symbol table."""
     sym = get_symbol(symbol)
     if sym:
         if sym["type"] != symtype:
@@ -122,6 +125,7 @@ def add_symbol(symbol, symtype, lineno=-1, **kwargs):
 
 
 def increase_symbol_usage(symbol, symtype=None):
+    """Increase symbol usage."""
     sym = get_symbol(symbol, symtype=symtype)
     if sym is None:
         if symtype is not None:

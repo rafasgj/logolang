@@ -48,7 +48,7 @@ precedence = (
 )
 
 
-def p_program(p):
+def p_program(p):  # noqa: D200,D403,D400,D415
     """program : statement_or_decl more_statements_or_decls"""
     sym = get_symbol("__main__", "")
     sym["code"] = codegen.FunctionDefinition(sym, sym["code"])
@@ -56,20 +56,20 @@ def p_program(p):
     p[0] = __parser_error
 
 
-def p_more_statements_or_decls(p):
+def p_more_statements_or_decls(p):  # noqa: D200,D205,D403,D400,D415
     """
     more_statements_or_decls : statement_or_decl more_statements_or_decls
                              | empty
     """
 
 
-def p_statement_or_decl_primitive_decl(p):
+def p_statement_or_decl_primitive_decl(p):  # noqa: D200,D403,D400,D415
     """
     statement_or_decl : primitive_decl
     """
 
 
-def p_statement_or_decl_statement(p):
+def p_statement_or_decl_statement(p):  # noqa: D200,D403,D400,D415
     """
     statement_or_decl : statement
     """
@@ -77,7 +77,7 @@ def p_statement_or_decl_statement(p):
     sym["code"].append(p[1])
 
 
-def p_primitive_decl(p):
+def p_primitive_decl(p):  # noqa: D200,D403,D400,D415
     """
     primitive_decl : primitive_signature body END
     """
@@ -85,7 +85,7 @@ def p_primitive_decl(p):
     pop_scope()
 
 
-def p_primitive_signature(p):
+def p_primitive_signature(p):  # noqa: D200,D403,D400,D415
     """
     primitive_signature : TO ID opt_args
     """
@@ -95,7 +95,7 @@ def p_primitive_signature(p):
     push_scope(p[2])
 
 
-def p_opt_args(p):
+def p_opt_args(p):  # noqa: D200,D205,D403,D400,D415
     """
     opt_args : COLON_ID opt_args
              | empty
@@ -107,7 +107,7 @@ def p_opt_args(p):
         p[0] = []
 
 
-def p_body(p):
+def p_body(p):  # noqa: D200,D205,D403,D400,D415
     """
     body : statement body
          | empty
@@ -115,7 +115,7 @@ def p_body(p):
     p[0] = ([p[1]] + p[2]) if p[1] is not None else []
 
 
-def p_statement(p):
+def p_statement(p):  # noqa: D200,D205,D403,D400,D415
     """
     statement : assignment_expression
                | primitive_call
@@ -126,7 +126,7 @@ def p_statement(p):
     p[0] = p[1]
 
 
-def p_primitive_call_print(p):
+def p_primitive_call_print(p):  # noqa: D200,D403,D400,D415
     """
     primitive_call : PRINT expression opt_params
     """
@@ -141,7 +141,7 @@ def p_primitive_call_print(p):
     )
 
 
-def p_primitive_call_typein(p):
+def p_primitive_call_typein(p):  # noqa: D200,D403,D400,D415
     """
     primitive_call : TYPEIN ID
     """
@@ -154,7 +154,7 @@ def p_primitive_call_typein(p):
     p[0] = codegen.CallProcedure(sym, [codegen.CallParam(param, "out")])
 
 
-def p_primitive_call(p):
+def p_primitive_call(p):  # noqa: D200,D403,D400,D415
     """
     primitive_call : ID opt_params
     """
@@ -163,7 +163,7 @@ def p_primitive_call(p):
     p[0] = codegen.CallProcedure(sym, p[2])
 
 
-def p_opt_params(p):
+def p_opt_params(p):  # noqa: D200,D205,D403,D400,D415
     """
     opt_params : expression opt_params
                | empty
@@ -175,7 +175,7 @@ def p_opt_params(p):
         p[0] = []
 
 
-def p_assignment_expr(p):
+def p_assignment_expr(p):  # noqa: D200,D403,D400,D415
     """
     assignment_expression : ID ASSIGN_OP expression
     """
@@ -190,7 +190,7 @@ def p_assignment_expr(p):
         p[0] = codegen.AssignOperator(p[2], sym, p[3], p[3].type)
 
 
-def p_expression(p):
+def p_expression(p):  # noqa: D200,D205,D403,D400,D415
     """
     expression : number_expression
                | string_expression
@@ -199,14 +199,14 @@ def p_expression(p):
     p[0] = p[1]
 
 
-def p_expression_parenthesis(p):
+def p_expression_parenthesis(p):  # noqa: D200,D403,D400,D415
     """
     expression : OPEN_PAR expression CLOSE_PAR
     """
     p[0] = p[2]
 
 
-def p_expression_binop(p):
+def p_expression_binop(p):  # noqa: D200,D205,D403,D400,D415
     """
     expression : expression ADD_OP expression
                | expression MUL_OP expression
@@ -220,14 +220,16 @@ def p_expression_binop(p):
     p[0] = codegen.BinaryOperator(p[2], p[1], p[3])
 
 
-def p_expression_uminus(p):
-    "expression : ADD_OP expression %prec UMINUS"
+def p_expression_uminus(p):  # noqa: D200,D403,D400,D415
+    """
+    expression : ADD_OP expression %prec UMINUS
+    """
     if p[2].type not in [int, float]:
         raise InvalidExpressionType(p.lineno(1), p[2].type)
     p[0] = codegen.BinaryOperator("*", codegen.ConstValue(-1, int), p[2])
 
 
-def p_expression_id(p):
+def p_expression_id(p):  # noqa: D200,D403,D400,D415
     """
     expression : COLON_ID
     """
@@ -236,7 +238,7 @@ def p_expression_id(p):
     p[0] = codegen.ReferenceValue(sym)
 
 
-def p_expression_random(p):
+def p_expression_random(p):  # noqa: D200,D403,D400,D415
     """
     expression : RANDOM
     """
@@ -247,28 +249,28 @@ def p_expression_random(p):
     p[0] = codegen.CallProcedure(sym, type=int, is_const=False)
 
 
-def p_string_expr(p):
+def p_string_expr(p):  # noqa: D200,D403,D400,D415
     """
     string_expression : STRING
     """
     p[0] = codegen.ConstValue(*p[1])
 
 
-def p_number_expr(p):
+def p_number_expr(p):  # noqa: D200,D403,D400,D415
     """
     number_expression : number_constant
     """
     p[0] = p[1]
 
 
-def p_number_constant(p):
+def p_number_constant(p):  # noqa: D200,D403,D400,D415
     """
     number_constant : NUMBER
     """
     p[0] = codegen.ConstValue(*p[1])
 
 
-def p_if_then_else_statement(p):
+def p_if_then_else_statement(p):  # noqa: D200,D403,D400,D415
     """
     if_then_else_statement : IF boolean_expression THEN body opt_else END
     """
@@ -284,7 +286,7 @@ def p_if_then_else_statement(p):
         p[0] = codegen.CodeBlock([p[2]] + p[4] + [p[2].false, p[5]])
 
 
-def p_opt_else(p):
+def p_opt_else(p):  # noqa: D200,D205,D403,D400,D415
     """
     opt_else : ELSE body
              | empty
@@ -292,7 +294,7 @@ def p_opt_else(p):
     p[0] = [] if p[1] is None else p[2]
 
 
-def p_while_statement(p):
+def p_while_statement(p):  # noqa: D200,D403,D400,D415
     """
     while_statement : WHILE boolean_expression body END
     """
@@ -305,21 +307,21 @@ def p_while_statement(p):
     p[0] = codegen.CodeBlock([start_st, p[2]] + p[3] + [jp_start, next_st])
 
 
-def p_boolean_expression(p):
+def p_boolean_expression(p):  # noqa: D200,D403,D400,D415
     """
     boolean_expression :  boolean_const
     """
     p[0] = p[1]
 
 
-def p_boolean_const(p):
+def p_boolean_const(p):  # noqa: D200,D403,D400,D415
     """
     boolean_const :  BOOLEAN
     """
     p[0] = codegen.BooleanValue(p[1].upper() in ["TRUE", "YES"])
 
 
-def p_boolean_relop(p):
+def p_boolean_relop(p):  # noqa: D200,D403,D400,D415
     """
     boolean_expression :  expression REL_OP expression
     """
@@ -338,7 +340,7 @@ def p_boolean_relop(p):
     p[0] = codegen.RelationalOperator(p[2], p[1], p[3])
 
 
-def p_boolean_expression_logicop(p):
+def p_boolean_expression_logicop(p):  # noqa: D200,D403,D400,D415
     """
     boolean_expression :  boolean_expression LOGIC_OP boolean_expression
     """
@@ -348,7 +350,7 @@ def p_boolean_expression_logicop(p):
     p[0] = codegen.BooleanOperator(p[2], p[1], p[3])
 
 
-def p_empty(p):
+def p_empty(p):  # noqa: D200,D403,D400,D415
     """empty :"""
     # An empty production rule.
     p[0] = None

@@ -412,6 +412,7 @@ class BooleanValue:
         self.false = None
 
     def gen_code(self):
+        """Generate code for LogoVM."""
         if self.true is None and self.false is None:
             return [f"PUSH {0 if self.value else 1}", "CMP 0"]
         if self.value and self.true:

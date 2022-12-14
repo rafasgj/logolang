@@ -152,6 +152,7 @@ __standard_library = {
 
 
 def initialize_standard_library():
+    """Initialize the Logo standard library."""
     add_symbol("_@ang", "VAR", lineno=-1)
     for name, data in __standard_library.items():
         sym = add_symbol(name, "FUNCTION", lineno=-1, **data)
