@@ -62,6 +62,7 @@ globals().update({f"t_{v}": k for k, v in OPERATORS.items()})
 t_ASSIGN_OP = "[-+*/]?="
 t_REL_OP = "==|<>|>=|<=|>|<"
 
+
 @TOKEN(r"[_a-zA-Z][_a-zA-Z0-9]*")
 def t_ID(token):  # pylint: disable=invalid-name
     """Extract an identifier."""
@@ -99,7 +100,13 @@ def t_NUMBER(token):  # pylint: disable=invalid-name
         token.value = (float(token.value), float)
     else:
         token.value = (int(token.value), int)
-    logging.log(3, "NUMBER:%d:(%s, %s)", token.lexer.lineno, token.value, type(token.value).__name__)
+    logging.log(
+        3,
+        "NUMBER:%d:(%s, %s)",
+        token.lexer.lineno,
+        token.value,
+        type(token.value).__name__,
+    )
     return token
 
 

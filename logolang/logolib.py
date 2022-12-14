@@ -18,7 +18,7 @@
 """Logolang standard library."""
 
 from logolang.symtable import add_symbol, push_scope, pop_scope
-from logolang.codegen import FunctionDefinition, CodeBlock
+from logolang.codegen import FunctionDefinition
 
 
 __standard_library = {
@@ -39,7 +39,7 @@ __standard_library = {
         "library": True,
         "datatype": int,
         "is_const": False,
-        "code": ["RAND", "PUSH 10", "MUL", "TRUNC"]
+        "code": ["RAND", "PUSH 10", "MUL", "TRUNC"],
     },
     "FORWARD": {
         "library": True,
@@ -55,7 +55,13 @@ __standard_library = {
         "args": 1,
         "argv": ["length"],
         "uses": ["_@ang"],
-        "code": ["LOAD _@ang", "PUSH 180", "ADD", "LOAD {argv[0]}", "CALL MOVE"],
+        "code": [
+            "LOAD _@ang",
+            "PUSH 180",
+            "ADD",
+            "LOAD {argv[0]}",
+            "CALL MOVE",
+        ],
     },
     "RIGHT": {
         "library": True,
@@ -154,7 +160,11 @@ def initialize_standard_library():
         new_args = []
         for arg in sym.get("argv", []):
             symarg = add_symbol(arg, "VAR", lineno=-1)
-            symarg["fqsn"] = f"{symarg['scope']}.{arg}" if symarg["scope"] and not arg.startswith("@") else arg
+            symarg["fqsn"] = (
+                f"{symarg['scope']}.{arg}"
+                if symarg["scope"] and not arg.startswith("@")
+                else arg
+            )
             new_args.append(symarg["fqsn"])
         sym["argv"] = new_args
         pop_scope()

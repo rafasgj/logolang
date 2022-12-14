@@ -24,6 +24,7 @@ class LogoLexerError(Exception):
 
 class InvalidCharacter(LogoLexerError):
     """Lexer invalid character."""
+
     def __init__(self, lineno, char):
         """Initialize error with detected invalid char."""
         super().__init__(f"Illegal character::{lineno}:{char}")
@@ -47,6 +48,7 @@ class LogoLinkerError(Exception):
 
 class InternalError(Exception):
     """An invalid type was used in an expression."""
+
     def __init__(self, msg):
         super().__init__(f"InternalError:{msg}")
 
@@ -66,6 +68,7 @@ class InvalidExpressionType(LogoParserError):
 
 
 class SymbolRedeclaration(LogoParserError):
-
     def __init__(self, lineno, symbol, original):
-        super().__init__(lineno, f"Redefining symbol {symbol} defined at {original}")
+        super().__init__(
+            lineno, f"Redefining symbol {symbol} defined at {original}"
+        )

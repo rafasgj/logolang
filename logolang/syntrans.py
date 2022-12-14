@@ -17,15 +17,20 @@
 
 """Logo Compiler Syntatic Analysis and Translation."""
 
-import sys
 import logging
 
 from ply import yacc
 
-from logolang.lexer import lexer, tokens
+from logolang.lexer import lexer, tokens  # noqa: F401
 
 from logolang import codegen
-from logolang.symtable import push_scope, pop_scope, add_symbol, get_symbol, increase_symbol_usage, new_label
+from logolang.symtable import (
+    push_scope,
+    pop_scope,
+    add_symbol,
+    get_symbol,
+    increase_symbol_usage,
+)
 
 from logolang.errors import InvalidExpressionType, InternalError
 
@@ -33,13 +38,13 @@ __parser_error = True
 __parser = None
 
 precedence = (
-    ('nonassoc', 'LOGIC_OP'),
-    ('right', 'NOT'),
-    ('nonassoc', 'REL_OP'),
-    ('left', 'ADD_OP'),
-    ('left', 'MUL_OP'),
-    ('right', 'PWR_OP'),
-    ('right', 'UMINUS'),
+    ("nonassoc", "LOGIC_OP"),
+    ("right", "NOT"),
+    ("nonassoc", "REL_OP"),
+    ("left", "ADD_OP"),
+    ("left", "MUL_OP"),
+    ("right", "PWR_OP"),
+    ("right", "UMINUS"),
 )
 
 
@@ -84,7 +89,9 @@ def p_primitive_signature(p):
     """
     primitive_signature : TO ID opt_args
     """
-    p[0] = add_symbol(p[2], "FUNCTION", lineno=p.lineno(2), argv=p[3][::-1], argc=len(p[3]))
+    p[0] = add_symbol(
+        p[2], "FUNCTION", lineno=p.lineno(2), argv=p[3][::-1], argc=len(p[3])
+    )
     push_scope(p[2])
 
 
@@ -128,7 +135,10 @@ def p_primitive_call_print(p):
         raise InternalError("PRINT function is not defined.")
     increase_symbol_usage(p[1])
     length = codegen.ConstValue(1 + len(p[3]), int)
-    p[0] = codegen.CallProcedure(sym, [codegen.CallParam(length, int)] + p[3] + [codegen.CallParam(p[2])])
+    p[0] = codegen.CallProcedure(
+        sym,
+        [codegen.CallParam(length, int)] + p[3] + [codegen.CallParam(p[2])],
+    )
 
 
 def p_primitive_call_typein(p):
@@ -140,7 +150,7 @@ def p_primitive_call_typein(p):
         raise InternalError("TYPEIN function is not defined.")
     increase_symbol_usage(p[1])
     param = add_symbol(p[2], "VAR")
-    increase_symbol_usage(param['name'])
+    increase_symbol_usage(param["name"])
     p[0] = codegen.CallProcedure(sym, [codegen.CallParam(param, "out")])
 
 
@@ -211,7 +221,7 @@ def p_expression_binop(p):
 
 
 def p_expression_uminus(p):
-    'expression : ADD_OP expression %prec UMINUS'
+    "expression : ADD_OP expression %prec UMINUS"
     if p[2].type not in [int, float]:
         raise InvalidExpressionType(p.lineno(1), p[2].type)
     p[0] = codegen.BinaryOperator("*", codegen.ConstValue(-1, int), p[2])
@@ -222,7 +232,7 @@ def p_expression_id(p):
     expression : COLON_ID
     """
     sym = add_symbol(p[1], "VAR")
-    increase_symbol_usage(sym['name'])
+    increase_symbol_usage(sym["name"])
     p[0] = codegen.ReferenceValue(sym)
 
 
@@ -267,7 +277,9 @@ def p_if_then_else_statement(p):
     if p[5] is not None:
         force_jp = codegen.BooleanValue(True)
         force_jp.true = codegen.Label()
-        p[0] = codegen.CodeBlock([p[2]] + p[4] + [force_jp, p[2].false] + p[5] + [force_jp.true])
+        p[0] = codegen.CodeBlock(
+            [p[2]] + p[4] + [force_jp, p[2].false] + p[5] + [force_jp.true]
+        )
     else:
         p[0] = codegen.CodeBlock([p[2]] + p[4] + [p[2].false, p[5]])
 
@@ -284,7 +296,7 @@ def p_while_statement(p):
     """
     while_statement : WHILE boolean_expression body END
     """
-    start_st =  codegen.Label()
+    start_st = codegen.Label()
     next_st = codegen.Label()
     jp_start = codegen.BooleanValue(True)
     jp_start.true = start_st
@@ -299,6 +311,7 @@ def p_boolean_expression(p):
     """
     p[0] = p[1]
 
+
 def p_boolean_const(p):
     """
     boolean_const :  BOOLEAN
@@ -310,14 +323,18 @@ def p_boolean_relop(p):
     """
     boolean_expression :  expression REL_OP expression
     """
-    for i in [1,3]:
+    for i in [1, 3]:
         if p[i].type == bool:
             raise InvalidExpressionType(p.lineno(i), bool)
     if p[1].type == str or p[3].type == str:
         if p[1].type != p[3].type:
-            raise InvalidExpressionType(p.lineno(2), "Cannot compare STRING to other data type")
+            raise InvalidExpressionType(
+                p.lineno(2), "Cannot compare STRING to other data type"
+            )
         if p[2] not in ["==", "<>"]:
-            raise InvalidExpressionType(p.lineno(2), "Can only compare STRING equality")
+            raise InvalidExpressionType(
+                p.lineno(2), "Can only compare STRING equality"
+            )
     p[0] = codegen.RelationalOperator(p[2], p[1], p[3])
 
 
@@ -325,7 +342,7 @@ def p_boolean_expression_logicop(p):
     """
     boolean_expression :  boolean_expression LOGIC_OP boolean_expression
     """
-    for i in [1,3]:
+    for i in [1, 3]:
         if p[i].type != bool:
             raise InvalidExpressionType(p.lineno(i), p[i].type)
     p[0] = codegen.BooleanOperator(p[2], p[1], p[3])
@@ -342,7 +359,9 @@ def p_error(p):
     global parser_error  # pylint: disable=global-statement,invalid-name
     parser_error = True
     if p:
-        logging.error("Invalid Token:%d: %s (%s)", p.lexer.lineno, p.value, p.type)
+        logging.error(
+            "Invalid Token:%d: %s (%s)", p.lexer.lineno, p.value, p.type
+        )
         # Just discard the token and tell the parser it's okay.
         __parser.errok()
     else:

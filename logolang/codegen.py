@@ -111,7 +111,9 @@ class BinaryOperator(namedtuple("BinaryOperator", "op lhs rhs")):
             raise InternalError("Operations for 'str' not available.")
         if lhs.type != rhs.type:
             if lhs.type == bool or rhs.type == bool:
-                raise InternalError("Invalid operation with 'bool' and 'number'.")
+                raise InternalError(
+                    "Invalid operation with 'bool' and 'number'."
+                )
         return super().__new__(cls, op, lhs, rhs)
 
     @property
@@ -131,7 +133,7 @@ class BinaryOperator(namedtuple("BinaryOperator", "op lhs rhs")):
     @property
     def value(self):
         """Return the expression value."""
-        operation = lambda _l, _r: self.type()
+        operation = {}
         if self.is_const:
             operation = {
                 "+": operator.add,
@@ -140,8 +142,10 @@ class BinaryOperator(namedtuple("BinaryOperator", "op lhs rhs")):
                 "/": operator.truediv,
                 "%": operator.mod,
                 "^": operator.pow,
-            }.get(self.op, operation)
-        return operation(self.lhs.value, self.rhs.value)
+            }
+        return operation.get(self.op, lambda _l, _r: self.type())(
+            self.lhs.value, self.rhs.value
+        )
 
     def gen_code(self):
         """Generate code for LogoVM."""
@@ -238,7 +242,6 @@ class CallProcedure:
     # def is_const(self):
     #     return self.symbol.get("is_const")
 
-
     def gen_code(self):
         """Generate code for LogoVM."""
 
@@ -311,16 +314,19 @@ class RelationalOperator:
     def __init__(self, oper, lhs, rhs):
         """Initialize object."""
         if lhs.type == str or rhs.type == str and oper not in ["==", "<>"]:
-            raise InternalError("Relational operators for 'str' are not available.")
+            raise InternalError(
+                "Relational operators for 'str' are not available."
+            )
         if lhs.type != rhs.type:
             if lhs.type == bool or rhs.type == bool:
-                raise InternalError("Invalid relation operation with 'bool' and 'number'.")
+                raise InternalError(
+                    "Invalid relation operation with 'bool' and 'number'."
+                )
         self.oper = oper
         self.lhs = lhs
         self.rhs = rhs
         self.true = None
         self.false = None
-
 
     @property
     def type(self):
@@ -331,7 +337,6 @@ class RelationalOperator:
     def is_const(self):
         """Return True if value is const."""
         return self.lhs.is_const and self.rhs.is_const
-
 
     def gen_code(self):
         """Generate code for LogoVM."""
@@ -425,7 +430,9 @@ class BooleanOperator:
         self.lhs = lhs
         self.rhs = rhs
         self.type = bool
-        self.is_const = self.lhs.is_const and (self.rhs is None or self.rhs.is_const)
+        self.is_const = self.lhs.is_const and (
+            self.rhs is None or self.rhs.is_const
+        )
         self.true = None
         self.false = None
 

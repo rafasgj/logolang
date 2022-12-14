@@ -21,7 +21,6 @@ import sys
 import logging
 import argparse
 
-from logolang.lexer import tokens, lexer
 from logolang.syntrans import parse_program
 from logolang.symtable import push_scope, add_symbol
 from logolang.logolib import initialize_standard_library
@@ -74,7 +73,12 @@ def main():
                 code_gen()
                 return 0
             return 1
-    except (logolang.errors.LogoLexerError, logolang.errors.LogoParserError, logolang.errors.LogoLinkerError, logolang.errors.InternalError, ) as error:
+    except (
+        logolang.errors.LogoLexerError,
+        logolang.errors.LogoParserError,
+        logolang.errors.LogoLinkerError,
+        logolang.errors.InternalError,
+    ) as error:
         print(str(error), file=sys.stderr)
         raise error
         return 1

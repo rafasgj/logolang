@@ -21,9 +21,8 @@ import logging
 import re
 
 
-from logolang.syntrans import parse_program
 from logolang.symtable import get_symbols_by_class
-from logolang.errors import LogoParserError, LogoLinkerError
+from logolang.errors import LogoLinkerError
 
 
 def init_code(start):
@@ -31,11 +30,6 @@ def init_code(start):
     logging.log(7, "init_code: %s", start)
     # .START
     code = [f".START {start}"]
-    functions = {
-        k: v
-        for k, v in get_symbols_by_class("FUNCTION").items()
-        if v["usage"] > 0
-    }
 
     # .INIT
     if any(
@@ -45,28 +39,16 @@ def init_code(start):
     ):
         code.extend(["", ".INIT 200 200 400 400"])
     # .DATA
-    symbols = []
-    # symbols = [
-    #     arg
-    #     for arg in {
-    #         arg: (get_symbols_by_class("VAR") or {}).get(arg)
-    #         for k, v in primitives.items()
-    #         for arg in v.get("__uses", [])
-    #         if k in functions.keys() or v.get("target") is functions.keys()
-    #     }.values()
-    #     if arg is not None
-    # ]
-    symbols.extend(
-        [
-            sym
-            for sym in (get_symbols_by_class("VAR") or {}).values()
-            if sym["usage"] > 0
-        ]
-    )
+    symbols = [
+        sym
+        for sym in (get_symbols_by_class("VAR") or {}).values()
+        if sym["usage"] > 0
+    ]
     if symbols:
+
         def sym_value(sym):
             return f"{sym.get('value', sym.get('datatype', lambda: 0)())}"
-        
+
         logging.log(7, "DATA section.")
         code.extend(["", ".DATA"])
         code.extend([f"{sym['fqsn']:<8} {sym_value(sym)}" for sym in symbols])
@@ -93,9 +75,7 @@ def code_gen():
         if not func or (
             not func.get("library", False) and func["code"].code is None
         ):
-            raise LogoLinkerError(
-                f"Undefined function: '{name}'."
-            )
+            raise LogoLinkerError(f"Undefined function: '{name}'.")
         # fmt: off
         if (
             not func.get("generated", False)
